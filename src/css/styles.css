@@ -581,12 +581,26 @@ body[data-theme="light"] .theme-toggle__icon {
 }
 
 @media (max-width: 768px) {
+  h1, h2 {
+    letter-spacing: -0.3px;
+  }
+
+  .display-4 {
+    font-size: 2.2rem;
+  }
+
   .hero-stats {
     grid-template-columns: repeat(2, minmax(120px, 1fr));
   }
 
   .section {
     padding: 4rem 0;
+  }
+
+  .hero-card,
+  .about-card,
+  .contact-card {
+    padding: 1.8rem;
   }
 
   .project-card,
@@ -626,11 +640,29 @@ body[data-theme="light"] .theme-toggle__icon {
   pointer-events: auto;
 }
 
-body[data-theme=\"light\"] .back-to-top {
+body[data-theme="light"] .back-to-top {
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(20, 20, 20, 0.2);
 }
 
+@media (max-width: 576px) {
+  .display-4 {
+    font-size: 1.9rem;
+  }
+
+  .hero-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+  }
+
+  .back-to-top {
+    right: 1rem;
+    bottom: 1rem;
+  }
+}
 @keyframes pageFadeIn {
   from {
     opacity: 0;

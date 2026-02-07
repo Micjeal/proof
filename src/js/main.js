@@ -117,7 +117,8 @@ window.addEventListener('scroll', () => {
   });
 
   if (backToTop) {
-    if (window.scrollY > 500) {
+    const canScroll = document.documentElement.scrollHeight > window.innerHeight + 120;
+    if (canScroll && window.scrollY > 200) {
       backToTop.classList.add('visible');
     } else {
       backToTop.classList.remove('visible');
