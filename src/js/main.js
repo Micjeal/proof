@@ -3,6 +3,7 @@ const sections = document.querySelectorAll('section');
 const revealTargets = document.querySelectorAll('section, .project-card, .skill-card, .quote-card, .highlight, .about-card, .process-step, .stat-card, .faq-item, .hero-card');
 const year = document.getElementById('year');
 const themeToggle = document.getElementById('themeToggle');
+const backToTop = document.getElementById('backToTop');
 
 if (year) {
   year.textContent = new Date().getFullYear();
@@ -114,4 +115,18 @@ window.addEventListener('scroll', () => {
       }
     }
   });
+
+  if (backToTop) {
+    if (window.scrollY > 500) {
+      backToTop.classList.add('visible');
+    } else {
+      backToTop.classList.remove('visible');
+    }
+  }
 });
+
+if (backToTop) {
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}

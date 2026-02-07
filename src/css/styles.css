@@ -570,6 +570,65 @@ body[data-theme="light"] .theme-toggle__icon {
   .contact-card {
     padding: 2rem;
   }
+
+  .cta-card {
+    padding: 2rem;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-stats {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
+
+  .section {
+    padding: 4rem 0;
+  }
+
+  .project-card,
+  .skill-card,
+  .quote-card,
+  .highlight,
+  .process-step,
+  .stat-card,
+  .faq-item {
+    padding: 1.6rem;
+  }
+}
+
+.back-to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(20, 20, 20, 0.7);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 20;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+body[data-theme=\"light\"] .back-to-top {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(20, 20, 20, 0.2);
 }
 
 @keyframes pageFadeIn {
