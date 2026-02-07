@@ -133,7 +133,8 @@ if (backToTop) {
 }
 
 const trackPageview = async () => {
-  const path = window.location.pathname.split('/').pop() || 'index.html';
+  const rawPath = window.location.pathname || '/';
+  const path = rawPath === '/' ? 'index.html' : rawPath.replace(/^\/+/, '');
   if (path === 'dashboard.html') {
     return;
   }

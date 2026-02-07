@@ -35,47 +35,106 @@
     </nav>
   </header>
 
-  <main class="section">
+  <main class="section dashboard">
     <div class="container">
-      <div class="section-title">
-        <p class="eyebrow">Analytics</p>
-        <h1>Visitor dashboard</h1>
-        <p class="text-muted">Simple pageview tracking powered by Netlify Functions + Blobs.</p>
+      <div class="dashboard-hero">
+        <div>
+          <p class="eyebrow">Analytics</p>
+          <h1>Visitor dashboard</h1>
+          <p class="text-muted">Real-time visitor intelligence with location + device insights.</p>
+        </div>
+        <div class="dashboard-meta">
+          <span class="dashboard-chip">Last updated: <span id="lastUpdated">--</span></span>
+          <span class="dashboard-chip">Tracking: location + device</span>
+        </div>
       </div>
 
-      <div class="row g-4">
-        <div class="col-lg-4">
-          <div class="stat-card">
-            <h3 id="totalVisits">0</h3>
-            <p>Total visits</p>
-          </div>
-          <div class="stat-card mt-4">
-            <h3 id="pageCount">0</h3>
-            <p>Tracked pages</p>
-          </div>
-          <p class="text-muted mt-4">Last updated: <span id="lastUpdated">--</span></p>
+      <div class="dashboard-kpis">
+        <div class="dashboard-kpi">
+          <p>Total visits</p>
+          <h3 id="totalVisits">0</h3>
         </div>
-        <div class="col-lg-8">
-          <div class="about-card">
-            <h2>Page breakdown</h2>
-            <div class="table-responsive">
-              <table class="table align-middle">
-                <thead>
-                  <tr>
-                    <th scope="col">Page</th>
-                    <th scope="col">Visits</th>
-                  </tr>
-                </thead>
-                <tbody id="statsTableBody">
-                  <tr>
-                    <td colspan="2">Loading...</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="text-muted mb-0">Refresh this page to see the latest totals.</p>
+        <div class="dashboard-kpi">
+          <p>Tracked pages</p>
+          <h3 id="pageCount">0</h3>
+        </div>
+        <div class="dashboard-kpi">
+          <p>Top country</p>
+          <h3 id="topCountry">--</h3>
+        </div>
+        <div class="dashboard-kpi">
+          <p>Top device</p>
+          <h3 id="topDevice">--</h3>
+        </div>
+        <div class="dashboard-kpi">
+          <p>Top browser</p>
+          <h3 id="topBrowser">--</h3>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+          <h2>Top pages</h2>
+          <div id="topPages" class="metric-list">
+            <p class="text-muted">Loading...</p>
           </div>
         </div>
+        <div class="dashboard-card">
+          <h2>Top countries</h2>
+          <div id="topCountries" class="metric-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h2>Top cities</h2>
+          <div id="topCities" class="metric-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h2>Device mix</h2>
+          <div id="topDevices" class="metric-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h2>Operating systems</h2>
+          <div id="topOS" class="metric-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h2>Browsers</h2>
+          <div id="topBrowsers" class="metric-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-card dashboard-recent">
+        <div class="dashboard-card__head">
+          <h2>Recent visits</h2>
+          <span class="text-muted">Last 25</span>
+        </div>
+        <div class="table-responsive">
+          <table class="table dashboard-table align-middle">
+            <thead>
+              <tr>
+                <th scope="col">Time</th>
+                <th scope="col">Page</th>
+                <th scope="col">Location</th>
+                <th scope="col">Device</th>
+                <th scope="col">Browser</th>
+              </tr>
+            </thead>
+            <tbody id="recentTableBody">
+              <tr>
+                <td colspan="5">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-muted mb-0">Data is aggregated. IP addresses are not stored.</p>
       </div>
     </div>
   </main>
@@ -129,18 +188,77 @@
   <script>
     const totalVisits = document.getElementById('totalVisits');
     const pageCount = document.getElementById('pageCount');
-    const tableBody = document.getElementById('statsTableBody');
+    const topCountry = document.getElementById('topCountry');
+    const topDevice = document.getElementById('topDevice');
+    const topBrowser = document.getElementById('topBrowser');
     const lastUpdated = document.getElementById('lastUpdated');
 
-    const renderRows = (pages) => {
-      const entries = Object.entries(pages || {}).sort((a, b) => b[1] - a[1]);
-      if (entries.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="2">No data yet.</td></tr>';
+    const topPages = document.getElementById('topPages');
+    const topCountries = document.getElementById('topCountries');
+    const topCities = document.getElementById('topCities');
+    const topDevices = document.getElementById('topDevices');
+    const topOS = document.getElementById('topOS');
+    const topBrowsers = document.getElementById('topBrowsers');
+    const recentTableBody = document.getElementById('recentTableBody');
+
+    const escapeHtml = (value) =>
+      String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
+    const toEntries = (map) =>
+      Object.entries(map || {}).filter(([, value]) => Number.isFinite(value));
+
+    const topEntries = (map, limit) =>
+      toEntries(map)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit);
+
+    const renderList = (container, entries) => {
+      if (!entries.length) {
+        container.innerHTML = '<p class="text-muted">No data yet.</p>';
         return;
       }
 
-      tableBody.innerHTML = entries
-        .map(([page, count]) => `<tr><td>${page}</td><td>${count}</td></tr>`)
+      const max = entries[0][1] || 1;
+      container.innerHTML = entries
+        .map(([label, value]) => {
+          const width = `${Math.max(6, Math.round((value / max) * 100))}%`;
+          return `
+            <div class="metric-row">
+              <div class="metric-label">${escapeHtml(label)}</div>
+              <div class="metric-value">${value}</div>
+              <div class="metric-bar"><span style="width: ${width};"></span></div>
+            </div>
+          `;
+        })
+        .join('');
+    };
+
+    const renderRecent = (rows) => {
+      if (!rows.length) {
+        recentTableBody.innerHTML = '<tr><td colspan="5">No visits yet.</td></tr>';
+        return;
+      }
+      recentTableBody.innerHTML = rows
+        .map((row) => {
+          const time = row.time ? new Date(row.time).toLocaleString() : '--';
+          const location = row.city && row.city !== 'Unknown'
+            ? row.city
+            : row.country || 'Unknown';
+          return `
+            <tr>
+              <td>${escapeHtml(time)}</td>
+              <td>${escapeHtml(row.path || '--')}</td>
+              <td>${escapeHtml(location)}</td>
+              <td>${escapeHtml(row.device || '--')} · ${escapeHtml(row.os || '--')}</td>
+              <td>${escapeHtml(row.browser || '--')}</td>
+            </tr>
+          `;
+        })
         .join('');
     };
 
@@ -152,12 +270,36 @@
         }
         const data = await response.json();
         totalVisits.textContent = data.total || 0;
+
         const pages = data.pages || {};
         pageCount.textContent = Object.keys(pages).length;
-        renderRows(pages);
+
+        const topCountryEntry = topEntries(data.countries, 1)[0];
+        topCountry.textContent = topCountryEntry ? `${topCountryEntry[0]} (${topCountryEntry[1]})` : '--';
+
+        const topDeviceEntry = topEntries(data.devices, 1)[0];
+        topDevice.textContent = topDeviceEntry ? `${topDeviceEntry[0]} (${topDeviceEntry[1]})` : '--';
+
+        const topBrowserEntry = topEntries(data.browsers, 1)[0];
+        topBrowser.textContent = topBrowserEntry ? `${topBrowserEntry[0]} (${topBrowserEntry[1]})` : '--';
+
+        renderList(topPages, topEntries(pages, 6));
+        renderList(topCountries, topEntries(data.countries, 6));
+        renderList(topCities, topEntries(data.cities, 6));
+        renderList(topDevices, topEntries(data.devices, 6));
+        renderList(topOS, topEntries(data.os, 6));
+        renderList(topBrowsers, topEntries(data.browsers, 6));
+        renderRecent(data.recent || []);
+
         lastUpdated.textContent = new Date().toLocaleString();
       } catch (error) {
-        tableBody.innerHTML = '<tr><td colspan="2">Unable to load stats.</td></tr>';
+        topPages.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        topCountries.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        topCities.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        topDevices.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        topOS.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        topBrowsers.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        recentTableBody.innerHTML = '<tr><td colspan="5">Unable to load stats.</td></tr>';
       }
     };
 
