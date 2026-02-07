@@ -132,6 +132,17 @@ if (backToTop) {
   });
 }
 
+const getSessionId = () => {
+  let sessionId = sessionStorage.getItem('session_id');
+  if (!sessionId) {
+    sessionId = (window.crypto && window.crypto.randomUUID)
+      ? window.crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    sessionStorage.setItem('session_id', sessionId);
+  }
+  return sessionId;
+};
+
 const trackPageview = async () => {
   const rawPath = window.location.pathname || '/';
   const path = rawPath === '/' ? 'index.html' : rawPath.replace(/^\/+/, '');
@@ -139,15 +150,77 @@ const trackPageview = async () => {
     return;
   }
 
+  const sessionId = getSessionId();
+  const hasSessionStart = sessionStorage.getItem('session_start');
+  const isNewSession = !hasSessionStart;
+  if (isNewSession) {
+    sessionStorage.setItem('session_start', new Date().toISOString());
+  }
+
+  const payload = {
+    event: document.body?.dataset?.page === '404' ? '404' : 'pageview',
+    path,
+    sessionId,
+    isNewSession,
+    landing: isNewSession ? path : null,
+    referrer: document.referrer || '',
+    host: window.location.host || '',
+    timestamp: Date.now(),
+  };
+
   try {
-    await fetch('/.netlify/functions/pageview', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ path }),
-    });
+    const body = JSON.stringify(payload);
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: 'application/json' });
+      navigator.sendBeacon('/.netlify/functions/pageview', blob);
+    } else {
+      await fetch('/.netlify/functions/pageview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        keepalive: true,
+      });
+    }
+  } catch {
+    // Ignore tracking errors to avoid affecting UX.
+  }
+};
+
+const trackSessionEnd = () => {
+  const rawPath = window.location.pathname || '/';
+  const path = rawPath === '/' ? 'index.html' : rawPath.replace(/^\/+/, '');
+  if (path === 'dashboard.html') {
+    return;
+  }
+  const sessionId = sessionStorage.getItem('session_id');
+  if (!sessionId) {
+    return;
+  }
+
+  const payload = {
+    event: 'session_end',
+    path,
+    sessionId,
+    timestamp: Date.now(),
+  };
+
+  try {
+    const body = JSON.stringify(payload);
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: 'application/json' });
+      navigator.sendBeacon('/.netlify/functions/pageview', blob);
+    } else {
+      fetch('/.netlify/functions/pageview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        keepalive: true,
+      });
+    }
   } catch {
     // Ignore tracking errors to avoid affecting UX.
   }
 };
 
 trackPageview();
+window.addEventListener('pagehide', trackSessionEnd);

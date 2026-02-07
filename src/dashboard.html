@@ -38,14 +38,23 @@
   <main class="section dashboard">
     <div class="container">
       <div class="dashboard-hero">
-        <div>
+        <div class="dashboard-hero__copy">
           <p class="eyebrow">Analytics</p>
           <h1>Visitor dashboard</h1>
-          <p class="text-muted">Real-time visitor intelligence with location + device insights.</p>
+          <p class="text-muted">Track unique visitors, referrers, landing pages, and session behavior.</p>
         </div>
-        <div class="dashboard-meta">
-          <span class="dashboard-chip">Last updated: <span id="lastUpdated">--</span></span>
-          <span class="dashboard-chip">Tracking: location + device</span>
+        <div class="dashboard-hero__controls">
+          <div class="dashboard-filters" role="group" aria-label="Date range">
+            <button class="filter-btn" type="button" data-range="today">Today</button>
+            <button class="filter-btn is-active" type="button" data-range="7">7 Days</button>
+            <button class="filter-btn" type="button" data-range="30">30 Days</button>
+            <button class="filter-btn" type="button" data-range="all">All</button>
+          </div>
+          <div class="dashboard-meta">
+            <button class="btn btn-ghost btn-sm" id="exportCsv" type="button">Export CSV</button>
+            <span class="dashboard-chip">Last updated: <span id="lastUpdated">--</span></span>
+            <span class="dashboard-chip">Tracking: location + device</span>
+          </div>
         </div>
       </div>
 
@@ -53,6 +62,14 @@
         <div class="dashboard-kpi">
           <p>Total visits</p>
           <h3 id="totalVisits">0</h3>
+        </div>
+        <div class="dashboard-kpi">
+          <p>Unique visitors</p>
+          <h3 id="uniqueVisitors">0</h3>
+        </div>
+        <div class="dashboard-kpi">
+          <p>Avg session</p>
+          <h3 id="avgSession">0s</h3>
         </div>
         <div class="dashboard-kpi">
           <p>Tracked pages</p>
@@ -63,12 +80,12 @@
           <h3 id="topCountry">--</h3>
         </div>
         <div class="dashboard-kpi">
-          <p>Top device</p>
-          <h3 id="topDevice">--</h3>
+          <p>Top referrer</p>
+          <h3 id="topReferrer">--</h3>
         </div>
         <div class="dashboard-kpi">
-          <p>Top browser</p>
-          <h3 id="topBrowser">--</h3>
+          <p>Top landing</p>
+          <h3 id="topLanding">--</h3>
         </div>
       </div>
 
@@ -76,6 +93,18 @@
         <div class="dashboard-card">
           <h2>Top pages</h2>
           <div id="topPages" class="metric-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h2>Referrers</h2>
+          <div id="topReferrers" class="metric-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h2>Landing pages</h2>
+          <div id="topLandings" class="metric-list">
             <p class="text-muted">Loading...</p>
           </div>
         </div>
@@ -109,6 +138,12 @@
             <p class="text-muted">Loading...</p>
           </div>
         </div>
+        <div class="dashboard-card">
+          <h2>404 errors</h2>
+          <div id="topErrors" class="metric-list">
+            <p class="text-muted">Loading...</p>
+          </div>
+        </div>
       </div>
 
       <div class="dashboard-card dashboard-recent">
@@ -123,18 +158,19 @@
                 <th scope="col">Time</th>
                 <th scope="col">Page</th>
                 <th scope="col">Location</th>
+                <th scope="col">Referrer</th>
                 <th scope="col">Device</th>
                 <th scope="col">Browser</th>
               </tr>
             </thead>
             <tbody id="recentTableBody">
               <tr>
-                <td colspan="5">Loading...</td>
+                <td colspan="6">Loading...</td>
               </tr>
             </tbody>
           </table>
         </div>
-        <p class="text-muted mb-0">Data is aggregated. IP addresses are not stored.</p>
+        <p class="text-muted mb-0">Data is aggregated. IPs are hashed for unique counts and never stored in raw form.</p>
       </div>
     </div>
   </main>
@@ -187,19 +223,29 @@
   <script src="js/main.js"></script>
   <script>
     const totalVisits = document.getElementById('totalVisits');
+    const uniqueVisitors = document.getElementById('uniqueVisitors');
+    const avgSession = document.getElementById('avgSession');
     const pageCount = document.getElementById('pageCount');
     const topCountry = document.getElementById('topCountry');
-    const topDevice = document.getElementById('topDevice');
-    const topBrowser = document.getElementById('topBrowser');
+    const topReferrer = document.getElementById('topReferrer');
+    const topLanding = document.getElementById('topLanding');
     const lastUpdated = document.getElementById('lastUpdated');
+    const exportCsvBtn = document.getElementById('exportCsv');
 
     const topPages = document.getElementById('topPages');
+    const topReferrers = document.getElementById('topReferrers');
+    const topLandings = document.getElementById('topLandings');
     const topCountries = document.getElementById('topCountries');
     const topCities = document.getElementById('topCities');
     const topDevices = document.getElementById('topDevices');
     const topOS = document.getElementById('topOS');
     const topBrowsers = document.getElementById('topBrowsers');
+    const topErrors = document.getElementById('topErrors');
     const recentTableBody = document.getElementById('recentTableBody');
+    const filterButtons = Array.from(document.querySelectorAll('.filter-btn'));
+
+    let currentRange = '7';
+    let currentStats = null;
 
     const escapeHtml = (value) =>
       String(value)
@@ -208,6 +254,22 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
+
+    const csvEscape = (value) => {
+      const text = String(value ?? '');
+      return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    };
+
+    const formatDuration = (seconds) => {
+      const value = Math.max(0, Math.round(Number(seconds) || 0));
+      const mins = Math.floor(value / 60);
+      const hrs = Math.floor(mins / 60);
+      const sec = value % 60;
+      const min = mins % 60;
+      if (hrs > 0) return `${hrs}h ${min}m`;
+      if (mins > 0) return `${mins}m ${sec}s`;
+      return `${sec}s`;
+    };
 
     const toEntries = (map) =>
       Object.entries(map || {}).filter(([, value]) => Number.isFinite(value));
@@ -240,7 +302,7 @@
 
     const renderRecent = (rows) => {
       if (!rows.length) {
-        recentTableBody.innerHTML = '<tr><td colspan="5">No visits yet.</td></tr>';
+        recentTableBody.innerHTML = '<tr><td colspan="6">No visits yet.</td></tr>';
         return;
       }
       recentTableBody.innerHTML = rows
@@ -254,6 +316,7 @@
               <td>${escapeHtml(time)}</td>
               <td>${escapeHtml(row.path || '--')}</td>
               <td>${escapeHtml(location)}</td>
+              <td>${escapeHtml(row.referrer || 'Direct')}</td>
               <td>${escapeHtml(row.device || '--')} · ${escapeHtml(row.os || '--')}</td>
               <td>${escapeHtml(row.browser || '--')}</td>
             </tr>
@@ -262,14 +325,26 @@
         .join('');
     };
 
-    const loadStats = async () => {
+    const setActiveFilter = (range) => {
+      filterButtons.forEach((button) => {
+        button.classList.toggle('is-active', button.dataset.range === range);
+      });
+    };
+
+    const loadStats = async (range) => {
+      const targetRange = range || currentRange;
+      setActiveFilter(targetRange);
+      currentRange = targetRange;
       try {
-        const response = await fetch('/.netlify/functions/stats');
+        const response = await fetch(`/.netlify/functions/stats?range=${encodeURIComponent(targetRange)}`);
         if (!response.ok) {
           throw new Error('Failed to fetch stats');
         }
         const data = await response.json();
-        totalVisits.textContent = data.total || 0;
+        currentStats = data;
+        totalVisits.textContent = data.pageviews || 0;
+        uniqueVisitors.textContent = data.uniqueVisitors || 0;
+        avgSession.textContent = formatDuration(data.avgSessionDuration || 0);
 
         const pages = data.pages || {};
         pageCount.textContent = Object.keys(pages).length;
@@ -277,33 +352,97 @@
         const topCountryEntry = topEntries(data.countries, 1)[0];
         topCountry.textContent = topCountryEntry ? `${topCountryEntry[0]} (${topCountryEntry[1]})` : '--';
 
-        const topDeviceEntry = topEntries(data.devices, 1)[0];
-        topDevice.textContent = topDeviceEntry ? `${topDeviceEntry[0]} (${topDeviceEntry[1]})` : '--';
+        const topReferrerEntry = topEntries(data.referrers, 1)[0];
+        topReferrer.textContent = topReferrerEntry ? `${topReferrerEntry[0]} (${topReferrerEntry[1]})` : '--';
 
-        const topBrowserEntry = topEntries(data.browsers, 1)[0];
-        topBrowser.textContent = topBrowserEntry ? `${topBrowserEntry[0]} (${topBrowserEntry[1]})` : '--';
+        const topLandingEntry = topEntries(data.landings, 1)[0];
+        topLanding.textContent = topLandingEntry ? `${topLandingEntry[0]} (${topLandingEntry[1]})` : '--';
 
         renderList(topPages, topEntries(pages, 6));
+        renderList(topReferrers, topEntries(data.referrers, 6));
+        renderList(topLandings, topEntries(data.landings, 6));
         renderList(topCountries, topEntries(data.countries, 6));
         renderList(topCities, topEntries(data.cities, 6));
         renderList(topDevices, topEntries(data.devices, 6));
         renderList(topOS, topEntries(data.os, 6));
         renderList(topBrowsers, topEntries(data.browsers, 6));
+        renderList(topErrors, topEntries(data.errors404, 6));
         renderRecent(data.recent || []);
 
-        lastUpdated.textContent = new Date().toLocaleString();
+        lastUpdated.textContent = data.generatedAt ? new Date(data.generatedAt).toLocaleString() : new Date().toLocaleString();
       } catch (error) {
         topPages.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        topReferrers.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        topLandings.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
         topCountries.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
         topCities.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
         topDevices.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
         topOS.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
         topBrowsers.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
-        recentTableBody.innerHTML = '<tr><td colspan="5">Unable to load stats.</td></tr>';
+        topErrors.innerHTML = '<p class="text-muted">Unable to load stats.</p>';
+        recentTableBody.innerHTML = '<tr><td colspan="6">Unable to load stats.</td></tr>';
       }
     };
 
-    loadStats();
+    const exportCsv = () => {
+      if (!currentStats) {
+        return;
+      }
+
+      const lines = [];
+      lines.push(`Range,${csvEscape(currentRange)}`);
+      lines.push(`From,${csvEscape(currentStats.rangeStart || '')}`);
+      lines.push(`To,${csvEscape(currentStats.rangeEnd || '')}`);
+      lines.push(`Generated,${csvEscape(currentStats.generatedAt || '')}`);
+      lines.push('');
+      lines.push('Metric,Value');
+      lines.push(`Pageviews,${currentStats.pageviews || 0}`);
+      lines.push(`Unique visitors,${currentStats.uniqueVisitors || 0}`);
+      lines.push(`Avg session duration (seconds),${currentStats.avgSessionDuration || 0}`);
+      lines.push(`Session count,${currentStats.sessionCount || 0}`);
+      lines.push(`Tracked pages,${Object.keys(currentStats.pages || {}).length}`);
+      lines.push('');
+
+      const addSection = (title, map) => {
+        lines.push(title);
+        lines.push('Label,Value');
+        topEntries(map, 50).forEach(([label, value]) => {
+          lines.push(`${csvEscape(label)},${value}`);
+        });
+        lines.push('');
+      };
+
+      addSection('Top Pages', currentStats.pages);
+      addSection('Referrers', currentStats.referrers);
+      addSection('Landing Pages', currentStats.landings);
+      addSection('Countries', currentStats.countries);
+      addSection('Cities', currentStats.cities);
+      addSection('Devices', currentStats.devices);
+      addSection('Operating Systems', currentStats.os);
+      addSection('Browsers', currentStats.browsers);
+      addSection('404 Errors', currentStats.errors404);
+
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const dateStamp = new Date().toISOString().slice(0, 10);
+      link.href = url;
+      link.download = `visitor-stats-${currentRange}-${dateStamp}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    };
+
+    filterButtons.forEach((button) => {
+      button.addEventListener('click', () => loadStats(button.dataset.range));
+    });
+
+    if (exportCsvBtn) {
+      exportCsvBtn.addEventListener('click', exportCsv);
+    }
+
+    loadStats(currentRange);
   </script>
 </body>
 </html>
