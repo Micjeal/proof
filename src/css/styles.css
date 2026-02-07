@@ -11,6 +11,10 @@
   --toggle-bg: rgba(255, 255, 255, 0.08);
   --toggle-border: rgba(255, 255, 255, 0.2);
   --toggle-icon: #f4f6fb;
+  --ambient-x: 50%;
+  --ambient-y: 20%;
+  --ambient-color: rgba(78, 212, 255, 0.35);
+  --ambient-translate: 0px;
 }
 
 body[data-theme="light"] {
@@ -45,6 +49,17 @@ body {
     radial-gradient(circle at 90% 20%, rgba(138, 91, 255, 0.12), transparent 45%),
     radial-gradient(circle at 30% 80%, rgba(78, 212, 255, 0.08), transparent 40%);
   transition: background 0.4s ease, color 0.4s ease;
+  position: relative;
+}
+
+body.page-enter {
+  animation: pageFadeIn 0.8s ease forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.page-enter {
+    animation: none;
+  }
 }
 
 h1, h2, h3 {
@@ -69,6 +84,31 @@ a {
 body[data-theme="light"] .site-header {
   background: rgba(245, 243, 238, 0.8);
   border-bottom: 1px solid rgba(20, 20, 20, 0.08);
+}
+
+header,
+main,
+footer {
+  position: relative;
+  z-index: 1;
+}
+
+.ambient {
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  transform: translateY(var(--ambient-translate));
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  background:
+    radial-gradient(circle at var(--ambient-x) var(--ambient-y), var(--ambient-color), transparent 55%),
+    radial-gradient(circle at 80% 15%, rgba(138, 91, 255, 0.2), transparent 45%),
+    radial-gradient(circle at 20% 85%, rgba(78, 212, 255, 0.15), transparent 50%);
+}
+
+body.ambient-active .ambient {
+  opacity: 0.85;
 }
 
 .navbar-brand {
@@ -253,6 +293,13 @@ body[data-theme="light"] .navbar-toggler-icon {
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
   text-align: center;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(78, 212, 255, 0.4);
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.45);
 }
 
 .stat-card h3 {
@@ -271,6 +318,13 @@ body[data-theme="light"] .navbar-toggler-icon {
   border-radius: 22px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: var(--shadow);
+  transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.faq-item:hover {
+  transform: translateY(-6px);
+  border-color: rgba(78, 212, 255, 0.4);
+  box-shadow: 0 35px 80px rgba(0, 0, 0, 0.45);
 }
 
 .project-card,
@@ -284,6 +338,26 @@ body[data-theme="light"] .navbar-toggler-icon {
   height: 100%;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.2s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.tilt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at var(--glow-x, 50%) var(--glow-y, 50%), rgba(255, 255, 255, 0.18), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.tilt.is-tilting::after {
+  opacity: 1;
 }
 
 .project-card:hover,
@@ -495,5 +569,16 @@ body[data-theme="light"] .theme-toggle__icon {
 
   .contact-card {
     padding: 2rem;
+  }
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
