@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Visitor Dashboard | Mugisha Micheal</title>
+  <meta name="description" content="Visitor analytics dashboard for Mugisha Micheal portfolio." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand brand" href="index.html">MUGISHA MICHEAL</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMain">
+          <ul class="navbar-nav ms-auto gap-lg-3">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          </ul>
+          <div class="ms-lg-4 mt-3 mt-lg-0 d-flex align-items-center gap-3">
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark or light mode">
+              <span class="theme-toggle__icon" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="section-title">
+        <p class="eyebrow">Analytics</p>
+        <h1>Visitor dashboard</h1>
+        <p class="text-muted">Simple pageview tracking powered by Netlify Functions + Blobs.</p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="stat-card">
+            <h3 id="totalVisits">0</h3>
+            <p>Total visits</p>
+          </div>
+          <div class="stat-card mt-4">
+            <h3 id="pageCount">0</h3>
+            <p>Tracked pages</p>
+          </div>
+          <p class="text-muted mt-4">Last updated: <span id="lastUpdated">--</span></p>
+        </div>
+        <div class="col-lg-8">
+          <div class="about-card">
+            <h2>Page breakdown</h2>
+            <div class="table-responsive">
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th scope="col">Page</th>
+                    <th scope="col">Visits</th>
+                  </tr>
+                </thead>
+                <tbody id="statsTableBody">
+                  <tr>
+                    <td colspan="2">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="text-muted mb-0">Refresh this page to see the latest totals.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3 class="footer-brand">Mugisha Micheal</h3>
+        <p>Software Engineer focused on secure, scalable systems and intelligent products.</p>
+        <div class="socials">
+          <a href="https://github.com/Micjeal">GitHub</a>
+          <a href="https://www.linkedin.com/in/mugisha-micheal">LinkedIn</a>
+          <a href="https://twitter.com/mugisha_micheal">Twitter</a>
+          <a href="https://wa.me/256123456789">WhatsApp</a>
+        </div>
+      </div>
+      <div>
+        <h4>Pages</h4>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Dashboard</h4>
+        <ul class="footer-links">
+          <li><a href="dashboard.html">Visitor dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul class="footer-links">
+          <li>Email: mugishamicheal24@gmail.com</li>
+          <li>Phone: +256 768 432 509</li>
+          <li>Kampala, Uganda</li>
+        </ul>
+        <a class="btn btn-ghost mt-2" href="contact.html">Start a project</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© <span id="year"></span> Mugisha Micheal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const totalVisits = document.getElementById('totalVisits');
+    const pageCount = document.getElementById('pageCount');
+    const tableBody = document.getElementById('statsTableBody');
+    const lastUpdated = document.getElementById('lastUpdated');
+
+    const renderRows = (pages) => {
+      const entries = Object.entries(pages || {}).sort((a, b) => b[1] - a[1]);
+      if (entries.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="2">No data yet.</td></tr>';
+        return;
+      }
+
+      tableBody.innerHTML = entries
+        .map(([page, count]) => `<tr><td>${page}</td><td>${count}</td></tr>`)
+        .join('');
+    };
+
+    const loadStats = async () => {
+      try {
+        const response = await fetch('/.netlify/functions/stats');
+        if (!response.ok) {
+          throw new Error('Failed to fetch stats');
+        }
+        const data = await response.json();
+        totalVisits.textContent = data.total || 0;
+        const pages = data.pages || {};
+        pageCount.textContent = Object.keys(pages).length;
+        renderRows(pages);
+        lastUpdated.textContent = new Date().toLocaleString();
+      } catch (error) {
+        tableBody.innerHTML = '<tr><td colspan="2">Unable to load stats.</td></tr>';
+      }
+    };
+
+    loadStats();
+  </script>
+</body>
+</html>

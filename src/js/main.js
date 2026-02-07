@@ -131,3 +131,22 @@ if (backToTop) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 }
+
+const trackPageview = async () => {
+  const path = window.location.pathname.split('/').pop() || 'index.html';
+  if (path === 'dashboard.html') {
+    return;
+  }
+
+  try {
+    await fetch('/.netlify/functions/pageview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path }),
+    });
+  } catch {
+    // Ignore tracking errors to avoid affecting UX.
+  }
+};
+
+trackPageview();
