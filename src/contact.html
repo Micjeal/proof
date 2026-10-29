@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact | Mugisha Micheal</title>
-  <meta name="description" content="Contact Mugisha Micheal for product development, systems work, and digital design collaboration." />
+  <title>Blog | Mugisha Micheal</title>
+  <meta name="description" content="Engineering notes and product thinking from Mugisha Micheal." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -23,10 +23,56 @@
           <ul class="navbar-nav ms-auto gap-lg-3">
             <li class="nav-item"><a class="nav-link" href="index.html#hero">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+            <li class="nav-item has-mega">
+              <a class="nav-link" href="projects.html">Projects</a>
+              <div class="mega-menu" aria-label="Project submenu">
+                <div class="container mega-menu__inner">
+                  <div class="mega-menu__overview">
+                    <p class="eyebrow">Selected work</p>
+                    <h3>Product design, engineering, and AI systems.</h3>
+                    <p>Custom solutions for healthcare, finance, operations, and digital transformation.</p>
+                    <a class="btn btn-hero btn-sm" href="projects.html">View all projects</a>
+                  </div>
+                  <div class="mega-menu__grid">
+                    <div class="mega-menu__group">
+                      <span class="mega-menu__label">Core builds</span>
+                      <a href="project-hms.html">Hospital Management System</a>
+                      <a href="project-banking.html">Next-Gen Banking System</a>
+                      <a href="project-deepfake.html">Deepfake Detection SaaS</a>
+                    </div>
+                    <div class="mega-menu__group">
+                      <span class="mega-menu__label">Product tools</span>
+                      <a href="project-figma-lite.html">Figma-Lite Drawing App</a>
+                      <a href="project-volunteer.html">Volunteer Management</a>
+                      <a href="project-dms.html">Data Management System</a>
+                    </div>
+                    <div class="mega-menu__group">
+                      <span class="mega-menu__label">Capabilities</span>
+                      <a href="projects.html#services">Web platform design</a>
+                      <a href="projects.html#process">System architecture</a>
+                      <a href="projects.html#skills">Product engineering</a>
+                    </div>
+                    <div class="mega-menu__group">
+                      <span class="mega-menu__label">Insights</span>
+                      <a href="blog.html">Engineering notes</a>
+                      <a href="testimonials.html">Client feedback</a>
+                      <a href="contact.html">Project enquiry</a>
+                    </div>
+                  </div>
+                  <div class="mega-menu__visual">
+                    <div class="mega-menu__card">
+                      <span>Featured</span>
+                      <h4>Next-Gen Banking System</h4>
+                      <p>Secure, scalable financial flows built for modern operations.</p>
+                      <a class="link-arrow" href="project-banking.html">Case study</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
             <li class="nav-item"><a class="nav-link" href="testimonials.html">Testimonials</a></li>
-            <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-            <li class="nav-item"><a class="nav-link active" href="contact.html">Contact</a></li>
+            <li class="nav-item"><a class="nav-link active" href="blog.html">Blog</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
           </ul>
           <div class="navbar-actions">
             <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark or light mode">
@@ -42,84 +88,77 @@
   <main>
     <section class="hero page-hero">
       <div class="container">
-        <p class="eyebrow">Contact</p>
-        <h1 class="display-4">Let’s build something practical, useful, and well designed.</h1>
-        <p class="lead">Tell me about your idea, project, or system challenge and I’ll help shape a strong next step.</p>
+        <p class="eyebrow">Blog</p>
+        <h1 class="display-4">Insights from builds, systems, and product decisions.</h1>
+        <p class="lead">Practical thinking on engineering, design, AI, and building digital products that work.</p>
       </div>
       <div class="hero-blob blob-1"></div>
       <div class="hero-blob blob-2"></div>
     </section>
-
     <section class="section">
       <div class="container">
-        <div class="contact-card">
-          <div>
-            <p class="eyebrow">Get in touch</p>
-            <h2>Available for product, web, dashboard, and system projects.</h2>
-            <p>Email: mugishamicheal24@gmail.com</p>
-            <p>Phone: +256 768 432 509</p>
-            <p>Location: Kampala, Uganda</p>
-            <div class="contact-actions">
-              <a class="btn btn-hero" href="mailto:mugishamicheal24@gmail.com">Email me</a>
-              <a class="btn btn-ghost" href="https://wa.me/+256768432509">Chat on WhatsApp</a>
-              <a class="btn btn-ghost" href="https://www.linkedin.com/in/mugisha-micheal">LinkedIn</a>
-            </div>
+        <div class="pill-row mb-4">
+          <span class="pill">Development</span>
+          <span class="pill">AI</span>
+          <span class="pill">Security</span>
+          <span class="pill">Product</span>
+          <span class="pill">Architecture</span>
+        </div>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <article class="project-card">
+              <div class="project-card__badge">Development</div>
+              <h3>Why I built a role-based hospital system in React</h3>
+              <p>Designing secure access and clear workflows in environments where reliability matters more than novelty.</p>
+              <ul class="list-unstyled">
+                <li>June 15, 2025</li>
+                <li>5 min read</li>
+              </ul>
+              <a class="link-arrow" href="contact.html">Read more</a>
+            </article>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <article class="project-card">
+              <div class="project-card__badge">Blockchain</div>
+              <h3>How transparency and accountability improve with blockchain-backed systems</h3>
+              <p>Making trust visible in systems where operations need stronger oversight and record integrity.</p>
+              <ul class="list-unstyled">
+                <li>May 28, 2025</li>
+                <li>7 min read</li>
+              </ul>
+              <a class="link-arrow" href="contact.html">Read more</a>
+            </article>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <article class="project-card">
+              <div class="project-card__badge">AI Ethics</div>
+              <h3>Creating a deepfake detection SaaS with ethics and engineering in balance</h3>
+              <p>Responsible AI design requires intent, strong validation, and systems that serve people without harm.</p>
+              <ul class="list-unstyled">
+                <li>April 10, 2025</li>
+                <li>10 min read</li>
+              </ul>
+              <a class="link-arrow" href="contact.html">Read more</a>
+            </article>
           </div>
         </div>
       </div>
     </section>
-
-    <section class="section alt">
-      <div class="container">
-        <div class="section-title">
-          <p class="eyebrow">Project inquiry</p>
-          <h2>Share a quick brief</h2>
-          <p class="text-muted">A short summary helps me understand your needs and respond with a clear next step.</p>
-        </div>
-        <div class="contact-card">
-          <form>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Your name" />
-              </div>
-              <div class="col-md-6">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" placeholder="you@example.com" />
-              </div>
-              <div class="col-12">
-                <label for="project" class="form-label">Project type</label>
-                <input type="text" class="form-control" id="project" placeholder="Website, dashboard, app, platform, etc." />
-              </div>
-              <div class="col-12">
-                <label for="message" class="form-label">Project details</label>
-                <textarea class="form-control" id="message" rows="5" placeholder="Tell me about your goals, timeline, and what you need built."></textarea>
-              </div>
-              <div class="col-12">
-                <button type="submit" class="btn btn-hero">Send inquiry</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </section>
-
     <section class="section cta-banner">
       <div class="container">
         <div class="cta-card">
           <div>
             <p class="eyebrow">Ready to build</p>
-            <h2>Have a system, app, or platform in mind?</h2>
-            <p>Let’s align on goals, timelines, and the right technical direction.</p>
+            <h2>Need a product partner for your next software idea?</h2>
+            <p>Let’s shape something useful, sustainable, and well-executed.</p>
           </div>
           <div class="cta-actions">
-            <a class="btn btn-hero" href="mailto:mugishamicheal24@gmail.com">Email me</a>
+            <a class="btn btn-hero" href="contact.html">Start a project</a>
             <a class="btn btn-ghost" href="projects.html">View work</a>
           </div>
         </div>
       </div>
     </section>
-
     <footer class="footer">
       <div class="container footer-grid">
         <div>
@@ -166,7 +205,6 @@
         </div>
       </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/main.js"></script>
     <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button>
