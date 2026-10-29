@@ -1,685 +1,373 @@
-:root {
-  --bg: #0b0d12;
-  --bg-alt: #111622;
-  --ink: #f4f6fb;
-  --accent: #4ed4ff;
-  --accent-2: #8a5bff;
-  --muted: #a1a8b8;
-  --card: #141b2b;
-  --shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
-  --radius-lg: 26px;
-  --toggle-bg: rgba(255, 255, 255, 0.08);
-  --toggle-border: rgba(255, 255, 255, 0.2);
-  --toggle-icon: #f4f6fb;
-}
-
-body[data-theme="light"] {
-  --bg: #f5f3ee;
-  --bg-alt: #f0ece6;
-  --ink: #141414;
-  --accent: #00b3ff;
-  --accent-2: #5b7bff;
-  --muted: #4f545f;
-  --card: #ffffff;
-  --shadow: 0 30px 70px rgba(15, 15, 15, 0.18);
-  --toggle-bg: rgba(20, 20, 20, 0.05);
-  --toggle-border: rgba(20, 20, 20, 0.2);
-  --toggle-icon: #141414;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  font-family: "Space Grotesk", system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--ink);
-  margin: 0;
-  line-height: 1.6;
-  background-image: radial-gradient(circle at 10% 10%, rgba(78, 212, 255, 0.12), transparent 40%),
-    radial-gradient(circle at 90% 20%, rgba(138, 91, 255, 0.12), transparent 45%),
-    radial-gradient(circle at 30% 80%, rgba(78, 212, 255, 0.08), transparent 40%);
-  transition: background 0.4s ease, color 0.4s ease;
-}
-
-h1, h2, h3, h4 {
-  font-family: "IBM Plex Serif", serif;
-  letter-spacing: -0.5px;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 25;
-  background: rgba(11, 13, 18, 0.72);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-body[data-theme="light"] .site-header {
-  background: rgba(245, 243, 238, 0.82);
-  border-bottom: 1px solid rgba(20, 20, 20, 0.08);
-}
-
-.navbar {
-  padding-top: 0.95rem;
-  padding-bottom: 0.95rem;
-}
-
-.navbar-brand {
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--ink);
-}
-
-.navbar-toggler {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: var(--ink);
-}
-
-body[data-theme="light"] .navbar-toggler {
-  border: 1px solid rgba(20, 20, 20, 0.2);
-}
-
-.navbar-toggler-icon {
-  width: 1.4rem;
-  height: 1.4rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(244,246,251,0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-body[data-theme="light"] .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='rgba(20,20,20,0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2.5' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
-}
-
-.navbar-nav {
-  align-items: center;
-  gap: 0.2rem;
-}
-
-.nav-item {
-  position: relative;
-}
-
-.nav-link {
-  position: relative;
-  color: var(--muted);
-  font-weight: 500;
-  padding: 0.6rem 0.8rem;
-  border-radius: 999px;
-  transition: color 0.2s ease, transform 0.2s ease, background 0.2s ease;
-}
-
-.nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0.8rem;
-  right: 0.8rem;
-  bottom: 0.2rem;
-  height: 2px;
-  background: linear-gradient(120deg, var(--accent), var(--accent-2));
-  border-radius: 999px;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform 0.25s ease;
-}
-
-.nav-link.active,
-.nav-link:hover {
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.03);
-  transform: translateY(-1px);
-}
-
-.nav-link.active::after,
-.nav-link:hover::after {
-  transform: scaleX(1);
-}
-
-.navbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-left: 1rem;
-}
-
-.btn {
-  border-radius: 999px;
-  padding: 0.7rem 1.6rem;
-  font-weight: 600;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-}
-
-.btn-hero {
-  background: linear-gradient(120deg, var(--accent), var(--accent-2));
-  color: #0b0d12;
-  border: none;
-  box-shadow: 0 14px 40px rgba(78, 212, 255, 0.35);
-}
-
-.btn-hero:hover {
-  background: linear-gradient(120deg, #6ae0ff, #a77bff);
-  color: #0b0d12;
-  box-shadow: 0 18px 46px rgba(78, 212, 255, 0.42);
-}
-
-.btn-ghost {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: var(--ink);
-  background: transparent;
-}
-
-.btn-ghost:hover {
-  border-color: rgba(78, 212, 255, 0.55);
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.theme-toggle {
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: 1px solid var(--toggle-border);
-  background: var(--toggle-bg);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.2s ease;
-}
-
-.theme-toggle:hover {
-  transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 10px 22px rgba(78, 212, 255, 0.18);
-}
-
-.theme-toggle__icon {
-  width: 20px;
-  height: 20px;
-  border-radius: 999px;
-  background: var(--toggle-icon);
-  box-shadow: inset -6px -6px 0 0 var(--toggle-bg);
-}
-
-body[data-theme="light"] .theme-toggle__icon {
-  background: var(--toggle-icon);
-  box-shadow: 0 0 0 0 var(--toggle-bg);
-}
-
-.has-mega {
-  position: static;
-}
-
-.mega-menu {
-  position: fixed;
-  left: 50%;
-  top: 86px;
-  transform: translateX(-50%);
-  width: 100vw;
-  padding: 0 1.25rem 1.25rem;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.22s ease, visibility 0.22s ease, transform 0.22s ease;
-  z-index: 40;
-}
-
-.nav-item.has-mega:hover .mega-menu,
-.nav-item.has-mega:focus-within .mega-menu {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
-}
-
-.mega-menu__inner {
-  display: grid;
-  grid-template-columns: 1.2fr 2.1fr 1fr;
-  gap: 1.25rem;
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 28px;
-  background: rgba(13, 16, 24, 0.92);
-  backdrop-filter: blur(14px);
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42);
-}
-
-body[data-theme="light"] .mega-menu__inner {
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(20, 20, 20, 0.08);
-  box-shadow: 0 28px 80px rgba(15, 15, 15, 0.12);
-}
-
-.mega-menu__overview {
-  background: linear-gradient(135deg, rgba(78, 212, 255, 0.12), rgba(138, 91, 255, 0.18));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
-  padding: 1.5rem;
-}
-
-.mega-menu__overview h3 {
-  margin: 0.6rem 0 0.8rem;
-  font-size: 1.7rem;
-}
-
-.mega-menu__overview p {
-  color: var(--muted);
-  margin: 0;
-}
-
-.mega-menu__overview .btn {
-  margin-top: 1rem;
-}
-
-.mega-menu__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(170px, 1fr));
-  gap: 1.25rem 1.5rem;
-}
-
-.mega-menu__group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-}
-
-.mega-menu__label {
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--muted);
-  font-weight: 700;
-}
-
-.mega-menu__group a {
-  color: var(--ink);
-  font-weight: 500;
-  padding: 0.4rem 0.55rem;
-  border-radius: 12px;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.mega-menu__group a:hover {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--ink);
-  transform: translateX(2px);
-}
-
-.mega-menu__visual {
-  display: flex;
-  align-items: stretch;
-}
-
-.mega-menu__card {
-  width: 100%;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
-  padding: 1.4rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.mega-menu__card span {
-  color: var(--accent);
-  font-weight: 700;
-  font-size: 0.72rem;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-}
-
-.mega-menu__card h4 {
-  margin-top: 0.8rem;
-  margin-bottom: 0.6rem;
-  font-size: 1.5rem;
-}
-
-.mega-menu__card p {
-  color: var(--muted);
-  margin: 0;
-}
-
-.mega-menu__card .link-arrow {
-  margin-top: 1rem;
-}
-
-.link-arrow {
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.link-arrow::after {
-  content: "→";
-}
-
-.hero {
-  position: relative;
-  padding: 7rem 0 5rem;
-  overflow: hidden;
-}
-
-.page-hero {
-  padding: 6rem 0 4rem;
-}
-
-.eyebrow {
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 0.75rem;
-  color: var(--muted);
-  font-weight: 600;
-}
-
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 1.5rem;
-}
-
-.hero-stats h3 {
-  margin: 0;
-  font-size: 2rem;
-}
-
-.hero-card {
-  background: var(--card);
-  padding: 2.5rem;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.hero-card__top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.85rem;
-  color: var(--muted);
-  margin-bottom: 1.5rem;
-}
-
-.pill-row {
-  display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  margin: 1rem 0 1.5rem;
-}
-
-.pill {
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 0.3rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-}
-
-.section {
-  padding: 5rem 0;
-}
-
-.section.alt {
-  background: var(--bg-alt);
-}
-
-.section-title {
-  margin-bottom: 2.5rem;
-}
-
-.project-card,
-.skill-card,
-.quote-card,
-.highlight,
-.process-step,
-.stat-card,
-.faq-item,
-.about-card,
-.contact-card,
-.cta-card {
-  background: var(--card);
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.project-card,
-.skill-card,
-.quote-card,
-.highlight,
-.process-step,
-.stat-card,
-.faq-item {
-  padding: 2rem;
-  height: 100%;
-}
-
-.project-card__badge {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--accent);
-}
-
-.project-card ul {
-  padding-left: 0;
-  margin: 1rem 0;
-  list-style: none;
-  color: var(--muted);
-}
-
-.process-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-}
-
-.process-step {
-  padding: 2rem;
-}
-
-.step-count {
-  display: inline-flex;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: var(--accent);
-  margin-bottom: 0.75rem;
-}
-
-.about-card {
-  padding: 2.5rem;
-}
-
-.highlight-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-}
-
-.highlight {
-  padding: 1.75rem;
-}
-
-.quote-card {
-  border-left: 4px solid var(--accent);
-}
-
-.contact-card {
-  padding: 3rem;
-  display: grid;
-  gap: 2rem;
-}
-
-.form-control {
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.7rem 1rem;
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--ink);
-}
-
-.footer {
-  padding: 2.5rem 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  padding-bottom: 2rem;
-}
-
-.footer-brand {
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 0.5rem;
-}
-
-.footer-links a {
-  color: var(--muted);
-}
-
-.footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 1.5rem 0;
-}
-
-.cta-banner {
-  background: var(--bg-alt);
-}
-
-.cta-card {
-  padding: 2.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.cta-actions,
-.contact-actions {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.hero-blob {
-  position: absolute;
-  width: 320px;
-  height: 320px;
-  background: radial-gradient(circle at 30% 30%, rgba(78, 212, 255, 0.35), transparent 70%);
-  opacity: 0.7;
-  filter: blur(20px);
-  z-index: -1;
-}
-
-.blob-1 {
-  top: -80px;
-  right: -60px;
-}
-
-.blob-2 {
-  bottom: -120px;
-  left: -80px;
-  background: radial-gradient(circle at 30% 30%, rgba(138, 91, 255, 0.35), transparent 70%);
-}
-
-.back-to-top {
-  position: fixed;
-  right: 1.5rem;
-  bottom: 1.5rem;
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(20, 20, 20, 0.7);
-  color: var(--ink);
-  display: grid;
-  place-items: center;
-  font-size: 1.1rem;
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 20;
-}
-
-.back-to-top.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-body[data-theme="light"] .back-to-top {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(20, 20, 20, 0.2);
-}
-
-@media (max-width: 991px) {
-  .navbar-actions {
-    margin-left: 0;
-    margin-top: 0.75rem;
-    justify-content: flex-start;
-    width: 100%;
-  }
-
-  .navbar-collapse {
-    padding-top: 0.5rem;
-  }
-
-  .mega-menu {
-    position: static;
-    width: 100%;
-    padding: 0;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transform: none;
-    display: none;
-  }
-
-  .nav-item.has-mega:hover .mega-menu,
-  .nav-item.has-mega:focus-within .mega-menu {
-    display: block;
-  }
-
-  .mega-menu__inner {
-    grid-template-columns: 1fr;
-    margin-top: 0.75rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .display-4 {
-    font-size: 2.2rem;
-  }
-
-  .hero-card,
-  .about-card,
-  .contact-card,
-  .cta-card {
-    padding: 1.8rem;
-  }
-}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mugisha Micheal | Software Engineer & AI Innovator</title>
+  <meta name="description" content="Software Engineer building secure, scalable products and AI-powered digital experiences." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%9A%80</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand brand" href="#top">MUGISHA MICHEAL</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain" aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navMain">
+          <ul class="navbar-nav ms-auto gap-lg-3">
+            <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="#skills">Skills</a></li>
+            <li class="nav-item has-mega">
+              <a class="nav-link" href="projects.html">Projects</a>
+              <div class="mega-menu" aria-label="Project submenu">
+                <div class="container mega-menu__inner">
+                  <div class="mega-menu__overview">
+                    <p class="eyebrow">Selected work</p>
+                    <h3>Product design, engineering, and AI systems.</h3>
+                    <p>Custom solutions for healthcare, finance, operations, and digital transformation.</p>
+                    <a class="btn btn-hero btn-sm" href="projects.html">View all projects</a>
+                  </div>
+
+                  <div class="mega-menu__grid">
+                    <div class="mega-menu__group">
+                      <span class="mega-menu__label">Core builds</span>
+                      <a href="project-hms.html">Hospital Management System</a>
+                      <a href="project-banking.html">Next-Gen Banking System</a>
+                      <a href="project-deepfake.html">Deepfake Detection SaaS</a>
+                    </div>
+                    <div class="mega-menu__group">
+                      <span class="mega-menu__label">Product tools</span>
+                      <a href="project-figma-lite.html">Figma-Lite Drawing App</a>
+                      <a href="project-volunteer.html">Volunteer Management</a>
+                      <a href="project-dms.html">Data Management System</a>
+                    </div>
+                    <div class="mega-menu__group">
+                      <span class="mega-menu__label">Capabilities</span>
+                      <a href="projects.html#services">Web platform design</a>
+                      <a href="projects.html#process">System architecture</a>
+                      <a href="projects.html#skills">Product engineering</a>
+                    </div>
+                    <div class="mega-menu__group">
+                      <span class="mega-menu__label">Insights</span>
+                      <a href="blog.html">Engineering notes</a>
+                      <a href="testimonials.html">Client feedback</a>
+                      <a href="contact.html">Project enquiry</a>
+                    </div>
+                  </div>
+
+                  <div class="mega-menu__visual">
+                    <div class="mega-menu__card">
+                      <span>Featured</span>
+                      <h4>Next-Gen Banking System</h4>
+                      <p>Secure, scalable financial flows built for modern operations.</p>
+                      <a class="link-arrow" href="project-banking.html">Case study</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="testimonials.html">Testimonials</a></li>
+            <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          </ul>
+
+          <div class="navbar-actions">
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark or light mode">
+              <span class="theme-toggle__icon" aria-hidden="true"></span>
+            </button>
+            <a class="btn btn-hero" href="contact.html">Let’s build</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section id="hero" class="hero">
+      <div class="container">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-6">
+            <p class="eyebrow">Available for impactful projects</p>
+            <h1 class="display-4">I build software systems that solve real business problems.</h1>
+            <p class="lead">Software Engineer | Product-minded developer | Systems builder</p>
+            <p class="lead">I design secure, scalable applications for healthcare, finance, AI, and operational workflows.</p>
+
+            <div class="d-flex flex-wrap gap-3 mt-4">
+              <a class="btn btn-hero" href="assets/MUGISHA-MICHEAL-CV.pdf" download>Download CV</a>
+              <a class="btn btn-ghost" href="projects.html">See my work</a>
+            </div>
+
+            <div class="hero-stats mt-5">
+              <div>
+                <h3>5+</h3>
+                <p>Production apps delivered</p>
+              </div>
+              <div>
+                <h3>3+</h3>
+                <p>Years building digital products</p>
+              </div>
+              <div>
+                <h3>12+</h3>
+                <p>Systems and platforms shipped</p>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 mt-4 flex-wrap">
+              <a class="link-arrow" href="https://github.com/Micjeal">GitHub</a>
+              <a class="link-arrow" href="https://www.linkedin.com/in/mugisha-micheal">LinkedIn</a>
+              <a class="link-arrow" href="https://twitter.com/mugisha_micheal">Twitter</a>
+              <a class="link-arrow" href="https://wa.me/+256768432509">WhatsApp</a>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="hero-card">
+              <div class="hero-card__top">
+                <span>Featured build</span>
+                <span>Final Year Project</span>
+              </div>
+              <h2>Next-Gen Banking System</h2>
+              <p>A secure financial platform with customer and admin panels, blockchain transaction visibility, and fraud monitoring features.</p>
+              <div class="pill-row">
+                <span class="pill">Blockchain</span>
+                <span class="pill">Security</span>
+                <span class="pill">Node.js</span>
+              </div>
+              <a class="link-arrow" href="project-banking.html">View case study</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-blob blob-1"></div>
+      <div class="hero-blob blob-2"></div>
+    </section>
+
+    <section id="about" class="section alt">
+      <div class="container">
+        <div class="row g-5 align-items-center">
+          <div class="col-lg-6">
+            <div class="about-card">
+              <h2>About me</h2>
+              <p>I design and build software systems that help teams work faster, serve users better, and make smarter decisions.</p>
+              <p>I hold a Diploma in Software Engineering from ISBAT University, and my final year project was a Next-Gen Banking System under the guidance of Mr. Tobias Kakooza.</p>
+              <p>My work sits at the intersection of product thinking, secure architecture, and clean engineering.</p>
+              <div class="pill-row">
+                <span class="pill">React.js</span>
+                <span class="pill">Node.js</span>
+                <span class="pill">AI Integration</span>
+                <span class="pill">System Architecture</span>
+              </div>
+              <div class="d-flex gap-3 mt-4 flex-wrap">
+                <a class="btn btn-hero" href="contact.html">Hire me</a>
+                <a class="btn btn-ghost" href="projects.html">See results</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="highlight-grid">
+              <div class="highlight">
+                <h3>Frontend</h3>
+                <p>Responsive interfaces, polished UX, dashboards, and product-focused development.</p>
+              </div>
+              <div class="highlight">
+                <h3>Backend</h3>
+                <p>Reliable APIs, secure business logic, data integrity, and scalable services.</p>
+              </div>
+              <div class="highlight">
+                <h3>Security</h3>
+                <p>JWT-based auth, RBAC, secure coding patterns, and risk-aware system design.</p>
+              </div>
+              <div class="highlight">
+                <h3>Delivery</h3>
+                <p>Clear communication, structured development, and practical solutions that ship.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="section">
+      <div class="container">
+        <div class="section-title">
+          <p class="eyebrow">Capabilities</p>
+          <h2>What I bring to a build</h2>
+          <p class="text-muted">A balanced mix of frontend, backend, systems thinking, and product execution.</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <div class="skill-card">
+              <h3>Frontend</h3>
+              <p>HTML5, CSS3, JavaScript, React.js, Bootstrap, Tailwind CSS</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="skill-card">
+              <h3>Backend</h3>
+              <p>Node.js, Express.js, PHP, Python, REST API development</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="skill-card">
+              <h3>Databases</h3>
+              <p>MySQL, MongoDB, IndexedDB, localStorage, data modeling</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="skill-card">
+              <h3>Security</h3>
+              <p>Authentication flows, access control, encryption awareness, secure system design</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="skill-card">
+              <h3>Design</h3>
+              <p>UI/UX thinking, responsive layout design, visual consistency, product flows</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <div class="skill-card">
+              <h3>DevOps</h3>
+              <p>Git, deployment, Docker basics, CI/CD workflows, AWS and hosting knowledge</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="container">
+        <div class="section-title">
+          <p class="eyebrow">Featured projects</p>
+          <h2>Selected work with real impact</h2>
+          <p class="text-muted">From operational systems to secure digital platforms and AI products.</p>
+          <a class="link-arrow" href="projects.html">View all projects</a>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4">
+            <article class="project-card">
+              <div class="project-card__badge">Healthcare</div>
+              <h3>Hospital Management System</h3>
+              <p>Role-based dashboards for patient records, inventory tracking, staff administration, and blood bank coordination.</p>
+              <ul class="list-unstyled">
+                <li>React.js, Tailwind CSS</li>
+                <li>Node.js, MySQL</li>
+              </ul>
+              <a class="link-arrow" href="project-hms.html">View case study</a>
+            </article>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <article class="project-card">
+              <div class="project-card__badge">Finance</div>
+              <h3>Next-Gen Banking System</h3>
+              <p>Transactional workflows, admin oversight, blockchain visibility, and fraud-aware design.</p>
+              <ul class="list-unstyled">
+                <li>HTML/CSS/JS, Node.js</li>
+                <li>Blockchain, MySQL</li>
+              </ul>
+              <a class="link-arrow" href="project-banking.html">View case study</a>
+            </article>
+          </div>
+          <div class="col-md-6 col-lg-4">
+            <article class="project-card">
+              <div class="project-card__badge">AI</div>
+              <h3>Deepfake Detection SaaS</h3>
+              <p>AI-powered detection platform focused on security, media validation, and responsible tech.</p>
+              <ul class="list-unstyled">
+                <li>Python, TensorFlow</li>
+                <li>Flask, React</li>
+              </ul>
+              <a class="link-arrow" href="project-deepfake.html">View case study</a>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container">
+        <div class="contact-card">
+          <div>
+            <p class="eyebrow">Get in touch</p>
+            <h2>Let’s build software that solves a real problem.</h2>
+            <p>Email: mugishamicheal24@gmail.com</p>
+            <p>Phone: +256 768 432 509</p>
+            <p>Location: Kampala, Uganda</p>
+            <div class="contact-actions">
+              <a class="btn btn-hero" href="mailto:mugishamicheal24@gmail.com">Email me</a>
+              <a class="btn btn-ghost" href="https://wa.me/+256768432509">Chat on WhatsApp</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <h3 class="footer-brand">Mugisha Micheal</h3>
+        <p>Software Engineer focused on secure, scalable systems and intelligent products.</p>
+        <div class="socials">
+          <a href="https://github.com/Micjeal">GitHub</a>
+          <a href="https://www.linkedin.com/in/mugisha-micheal">LinkedIn</a>
+          <a href="https://twitter.com/mugisha_micheal">Twitter</a>
+          <a href="https://wa.me/+256768432509">WhatsApp</a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Pages</h4>
+        <ul class="footer-links">
+          <li><a href="about.html">About</a></li>
+          <li><a href="projects.html">Projects</a></li>
+          <li><a href="testimonials.html">Testimonials</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Work</h4>
+        <ul class="footer-links">
+          <li><a href="project-hms.html">Hospital Management</a></li>
+          <li><a href="project-banking.html">Next-Gen Banking</a></li>
+          <li><a href="project-deepfake.html">Deepfake Detection</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Contact</h4>
+        <ul class="footer-links">
+          <li>Email: mugishamicheal24@gmail.com</li>
+          <li>Phone: +256 768 432 509</li>
+          <li>Kampala, Uganda</li>
+        </ul>
+        <a class="btn btn-ghost mt-2" href="contact.html">Start a project</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© <span id="year"></span> Mugisha Micheal. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/main.js"></script>
+  <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button>
+</body>
+</html>
